@@ -32,15 +32,16 @@ LN* read(const char* file){
 				info[infoPos] += line[i];
 		}
 		head = head->next = new LN(info[0], info[1], info[2], tail);
+		delete [] info;
 	}
 
 	infile.close();
-	return front->next;
+	return front; //return the pointer to the header node
 }
 
-void write(LN* node) {
+void write(LN* node, const char* file) {
 	std::ofstream outfile;
-	outfile.open("output.txt");
+	outfile.open(file);
 	while (node->next != NULL) {
 		outfile << " " << node->name << " \t" << node->address << " \t" << node->phone << std::endl;
 		node = node->next;
@@ -76,13 +77,55 @@ void remove(LN* node, int id) {
 	
 }
 
+void deleteList(LN* node) {
+	while (node != NULL) {
+		LN* toDelete = node;
+		node = node->next;
+		delete toDelete;
+	}
+}
+
 int main() {
+
+	std::cout << "Please enter one of the commands:\n1) read <file_name.txt>\n2) write <file_name.txt>\n3) print\n4) delete <ID_number>\n5) quit" << std::endl;
+	
+	std::string input;
+	std::string* command = new std::string[4];
+	LN* database = NULL;
+
+	//~ while (true) {
+		//~ std::cin >> input;
+		//~ int commandPos = 0;
+		//~ for (int i = 0; input[i] != '\0'; ++i) {
+			//~ if (input[i] == ' ')
+				//~ ++commandPos;
+			//~ else
+				//~ command[commandPos] += input[i];
+		//~ }
+		//~ std::cout << command[0] << std::endl;
+		//~ if (command[0] == "quit") {
+			//~ std::cout << "Program Exiting" << std::endl;
+			//~ break;
+		//~ }
+		//~ else if (command[0] == "read") {
+			//~ //std::string file = command.substr(command.find(" "));
+			//~ database = read(command[1])->next;
+		//~ }
+		//~ else if (command[0] == "write")
+			//~ write(database, command[1]);
+		//~ else if (command[0] == "print")
+			//~ print(database);
+		//~ else if (command[0] == "delete")
+			//~ remove(database, command[1]);
+
+	//~ }
 	LN* infoList = read("record.txt");
-	print(infoList);
+	print(infoList->next);
 	
 	std::cout << '\n';
-	remove(infoList, 3);
-	print(infoList);
-	write(infoList);
+	remove(infoList->next, 3);
+	print(infoList->next);
+	write(infoList->next, "output.txt");
+	deleteList(infoList);
 	return 0;
 }
