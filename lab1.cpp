@@ -17,26 +17,25 @@ struct LN {
 LN* read(const char* file){
 	std::string line;
 	std::ifstream infile(file);
-	// use a header node to maintain the order of entries
-	LN* head = new LN(); //trailer node
+	// use a header-trailer link list to maintain the order of entries and easier to delete the last node
+	LN* head = new LN();
+	LN* tail = head->next = new LN();
+	LN* front = head;
 	
 	while (getline(infile, line)) {
 		std::string* info = new std::string[4]; // [ name, address, phone ]
 		int infoPos = 0;
 		for (int i = 0; line[i] != '\0'; ++i) {
-			if (line[i] == '\t') {
+			if (line[i] == '\t')
 				++infoPos;
-			}
-			else {
+			else
 				info[infoPos] += line[i];
-			}
 		}
-		head = new LN(info[0], info[1], info[2], head);
+		head = head->next = new LN(info[0], info[1], info[2], tail);
 	}
-	//~ head = new LN("Brian Huynh", "64224 Arroyo Dr", "4087122447", head);
-	//~ head = new LN("John Doe", "12345 Durham Dr", "4089294404", head);
+
 	infile.close();
-	return head;
+	return front->next;
 }
 
 void write(LN* node) {
@@ -73,8 +72,8 @@ void remove(LN* node, int id) {
 	node->address = toDelete->address;
 	node->phone = toDelete->phone;
 	node->next = toDelete->next;
-	
 	delete toDelete;
+	
 }
 
 int main() {
@@ -82,7 +81,7 @@ int main() {
 	print(infoList);
 	
 	std::cout << '\n';
-	remove(infoList, 1);
+	remove(infoList, 3);
 	print(infoList);
 	write(infoList);
 	return 0;
