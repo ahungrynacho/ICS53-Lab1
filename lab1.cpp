@@ -17,28 +17,24 @@ struct LN {
 LN* read(const char* file){
 	std::string line;
 	std::ifstream infile(file);
+	// use a header node to maintain the order of entries
 	LN* head = new LN(); //trailer node
 	
 	while (getline(infile, line)) {
 		std::string* info = new std::string[4]; // [ name, address, phone ]
-		
-		//int infoPos = 0;
-		//int iStart = 0;
-		//while (line[iStart] != '\0') {
-			//int i = iStart;
-			//std::string temp;
-			//for (; line[i] != '\n' || line[i] != '\t'; ++i) {
-				//temp += line[i];
-			//}
-
-			//info[infoPos] = temp;
-			//infoPos++;
-			//iStart = i;
-		//}
-		//head = new LN(info[0], info[1], info[2], head);
+		int infoPos = 0;
+		for (int i = 0; line[i] != '\0'; ++i) {
+			if (line[i] == '\t') {
+				++infoPos;
+			}
+			else {
+				info[infoPos] += line[i];
+			}
+		}
+		head = new LN(info[0], info[1], info[2], head);
 	}
-	head = new LN("Brian Huynh", "64224 Arroyo Dr", "4087122447", head);
-	head = new LN("John Doe", "12345 Durham Dr", "4089294404", head);
+	//~ head = new LN("Brian Huynh", "64224 Arroyo Dr", "4087122447", head);
+	//~ head = new LN("John Doe", "12345 Durham Dr", "4089294404", head);
 	infile.close();
 	return head;
 }
