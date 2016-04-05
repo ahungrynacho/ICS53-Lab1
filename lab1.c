@@ -1,6 +1,9 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#define MAX_PEOPLE 1024
+#define MAX_INPUTS 128
+#define STR_SIZE 1024
 
 typedef struct ListNode{
 	char* name;
@@ -15,10 +18,10 @@ LN* read(const char* file){
 	LN* front = head;
 	tail->next = NULL;
 	
-	char line[100][1024]; //MAX CAP: 100 entries of 1024 char long
+	char line[MAX_PEOPLE][STR_SIZE]; //MAX CAP: 100 entries of 1024 char long
 	int iEntry = 0;
 	FILE* fp = fopen(file, "r");
-	while (fgets(line[iEntry], 1024, fp) != NULL) { //NULL == EOF
+	while (fgets(line[iEntry], STR_SIZE, fp) != NULL) { //NULL == EOF
 		
 		int tokenPos = 0;
 		char* token = strtok(line[iEntry], "\t"); 
@@ -89,68 +92,50 @@ void delete_list(LN* node) {
 	}
 }
 
-char* user_input(char* info) {
-	char* infoList[4];
-	char* token = strtok(info, " ");
-	
-	int i = 0;
-	while (token != NULL) {
-		infoList[i] = token;
-		token = strtok(NULL, " ");
-		++i;
-	}
-	return *infoList;
+char* trim(char* str) {
+	int i = strlen(str) - 1;
+	if ((i > 0) && (str[i] == '\n'))
+		str[i] = '\0';
+	return str;
 }
 
 
 
 int main(){
 	LN* database = NULL;
-	char response[100][1024];
+	char response[MAX_INPUTS][STR_SIZE];
 	printf("Please enter one of the commands:\n1) read <file_name.txt>\n2) write <file_name.txt>\n3) print\n4) delete <ID_number>\n5) quit\n");
 	
 	int resCount = 0;
-	while (resCount < 100) {
-		fgets(response[resCount], 1024, stdin);
+	while (resCount < MAX_INPUTS) {
+		fgets(response[resCount], STR_SIZE, stdin);
 
-		//~ if (strcmp(response[resCount], "quit\n") == 0)
-			//~ printf("okay");
 		char* command[4];
 		char* token = strtok(response[resCount], " ");
 		
 		int i = 0;
 		while (token != NULL) {
-			command[i] = strtok(token, "\n");
+			//~ command[i] = strtok(token, "\n");
+			command[i] = trim(token);
 			token = strtok(NULL, " ");
 			++i;
 		}
-		printf("%s-%s", command[0], command[1]);
 
 		if (strcmp(command[0], "quit") == 0)
 			break;
-		//~ else if (strcmp(command[0], "read") == 0)
-			//~ printf("%s", command[1]); 
-			//~ database = read(command[1]); //command[1] contains /n
-		//~ else if (strcmp(command[0], "write\n") == 0)
-			//~ write(database, command[1]);
-		//~ else if (strcmp(command[0], "delete\n") == 0) {
-			//~ int i = *command[1] - '0';
-			//~ remove_node(database, i);
-		//~ }
-		//~ else if (strcmp(command[0], "print\n") == 0)
-			//~ print(database);
+		else if (strcmp(command[0], "read") == 0)
+			database = read(command[1]); //command[1] contains /n
+		else if (strcmp(command[0], "write") == 0)
+			write(database->next, command[1]);
+		else if (strcmp(command[0], "delete") == 0) {
+			int i = *command[1] - '0';
+			remove_node(database->next, i);
+		}
+		else if (strcmp(command[0], "print") == 0)
+			print(database->next);
 		++resCount;	
 	}
 	delete_list(database);
-	
-	//~ LN* database = read("record.txt");
-	//~ remove_node(database->next, 2);
-	//~ print(database->next);
-	//~ write(database->next, "new_record.txt");
-	//~ delete_list(database);
-	//~ char* str1 = "abc";
-	//~ str1 = "123";
-	//~ puts(str1);
 	return 0;
 }
 
