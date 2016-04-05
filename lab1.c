@@ -99,7 +99,6 @@ char* trim(char* str) {
 }
 
 
-
 int main(){
 	LN* database = NULL;
 	char response[MAX_INPUTS][STR_SIZE];
@@ -124,16 +123,24 @@ int main(){
 			delete_list(database);
 			break;
 		}
-		else if (strcmp(command[0], "read") == 0)
-			database = read(command[1]); //command[1] contains /n
-		else if (strcmp(command[0], "write") == 0)
-			write(database->next, command[1]);
+		else if (strcmp(command[0], "read") == 0) {
+			if (fopen(command[1], "r") != NULL)
+				database = read(command[1]);
+		}
+		else if (strcmp(command[0], "write") == 0) {
+			if (database != NULL)
+				write(database->next, command[1]);
+		}
+				
 		else if (strcmp(command[0], "delete") == 0) {
-			int i = *command[1] - '0';
-			remove_node(database->next, i);
+			if (database != NULL) {
+				int i = *command[1] - '0';
+				remove_node(database->next, i);
+			}
 		}
 		else if (strcmp(command[0], "print") == 0)
-			print(database->next);
+			if (database != NULL)
+				print(database->next);
 		++resCount;	
 	}
 	return 0;
