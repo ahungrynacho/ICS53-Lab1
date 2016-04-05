@@ -46,7 +46,6 @@ LN* read(const char* file){
 	
 }
 
-
 void write(LN* node, const char* file) {
 	FILE* fp = fopen(file, "w");
 	
@@ -121,8 +120,10 @@ int main(){
 			++i;
 		}
 
-		if (strcmp(command[0], "quit") == 0)
+		if (strcmp(command[0], "quit") == 0) {
+			delete_list(database);
 			break;
+		}
 		else if (strcmp(command[0], "read") == 0)
 			database = read(command[1]); //command[1] contains /n
 		else if (strcmp(command[0], "write") == 0)
@@ -135,7 +136,6 @@ int main(){
 			print(database->next);
 		++resCount;	
 	}
-	delete_list(database);
 	return 0;
 }
 
