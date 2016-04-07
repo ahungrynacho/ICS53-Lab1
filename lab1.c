@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #define MAX_PEOPLE 1024
 #define MAX_INPUTS 128
-#define STR_SIZE 1024
+#define STR_SIZE 80
 
 typedef struct ListNode{
 	char* name;
@@ -77,7 +77,7 @@ void remove_node(LN* node, int id) {
 void print(LN* node) {
 	int count = 1;
 	while (node->next != NULL) {
-		printf("%i %s\t%s\t%s", count, node->name, node->address, node->phone);
+		printf("%i\t%s\t%s\t%s", count, node->name, node->address, node->phone);
 		node = node->next;
 		count++;
 	}
@@ -102,20 +102,19 @@ char* trim(char* str) {
 int main(){
 	LN* database = NULL;
 	char response[MAX_INPUTS][STR_SIZE];
-	printf("Please enter one of the commands:\n1) read <file_name.txt>\n2) write <file_name.txt>\n3) print\n4) delete <ID_number>\n5) quit\n");
 	
 	int resCount = 0;
 	while (resCount < MAX_INPUTS) {
 		fgets(response[resCount], STR_SIZE, stdin);
 
 		char* command[4];
-		char* token = strtok(response[resCount], " ");
+		char* token = strtok(response[resCount], " \t");
 		
 		int i = 0;
 		while (token != NULL) {
 			//~ command[i] = strtok(token, "\n");
 			command[i] = trim(token);
-			token = strtok(NULL, " ");
+			token = strtok(NULL, " \t");
 			++i;
 		}
 
